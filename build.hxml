@@ -1,0 +1,6 @@
+-cp src
+-main Main
+-js docs/index.js
+-dce full
+
+-lib coconut.vdom
