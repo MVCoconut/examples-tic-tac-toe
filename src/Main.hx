@@ -15,6 +15,8 @@ class Main extends coconut.ui.View {
 		<div>
 			<if ${game.winner != null}>
 				Player ${game.winner} wins!
+			<else>
+				Player ${game.currentPlayer}\'s turn.
 			</if>
 			<div>
 				<box pos=${0}/>
@@ -50,6 +52,13 @@ class Main extends coconut.ui.View {
 
 class Game implements coconut.data.Model {
 	@:editable var steps:ObservableArray<Step> = new ObservableArray();
+	
+	@:computed var currentPlayer:Int = {
+		switch steps.length {
+			case 0: 0;
+			case v: steps.get(v - 1).player == 0 ? 1 : 0;
+		}
+	}
 	
 	@:computed var winner:Int = {
 		var arr = steps.toArray();
@@ -92,12 +101,8 @@ class Game implements coconut.data.Model {
 	
 	public function select(i:Int) {
 		if(winner != null) return;
-		var next = switch steps.length {
-			case 0: 0;
-			case v: steps.get(v - 1).player == 0 ? 1 : 0;
-		}
 		steps.push({
-			player: next,
+			player: currentPlayer,
 			position: i,
 		});
 	}

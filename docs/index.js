@@ -230,6 +230,10 @@ Main.prototype = $extend(coconut_ui_View.prototype,{
 			__r1.push("Player ");
 			__r1.push(Std.string(tink_state__$Observable_Observable_$Impl_$.get_value(tink_state__$Observable_Observable_$Impl_$.get_value(this.__slots.game.observe()).__coco_winner)));
 			__r1.push(" wins!");
+		} else {
+			__r1.push("Player ");
+			__r1.push(Std.string(tink_state__$Observable_Observable_$Impl_$.get_value(tink_state__$Observable_Observable_$Impl_$.get_value(this.__slots.game.observe()).__coco_currentPlayer)));
+			__r1.push("'s turn.");
 		}
 		var __r2 = [];
 		var __ret = { pos : 0};
@@ -309,21 +313,35 @@ var Game = function() {
 	var this1 = new tink_state__$State_SimpleState(new tink_state_ObservableArray(),null,null);
 	this.__coco_steps = this1;
 	var this2 = { f : function() {
+		var _g = tink_state__$Observable_Observable_$Impl_$.get_value(tink_state__$State_State_$Impl_$.get_value(_gthis.__coco_steps).observableLength);
+		if(_g == 0) {
+			return 0;
+		} else {
+			var v = _g;
+			if(tink_state__$State_State_$Impl_$.get_value(_gthis.__coco_steps).get(v - 1).player == 0) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	}};
+	this.__coco_currentPlayer = tink_state__$Observable_Observable_$Impl_$.auto(this2);
+	var this3 = { f : function() {
 		var arr = tink_state__$State_State_$Impl_$.get_value(_gthis.__coco_steps).toArray();
 		var player0 = [];
 		var player1 = [];
-		var check = function(v) {
-			var _g = 0;
-			var _g1 = Game.patterns;
-			while(_g < _g1.length) {
-				var pattern = _g1[_g];
-				++_g;
+		var check = function(v1) {
+			var _g1 = 0;
+			var _g11 = Game.patterns;
+			while(_g1 < _g11.length) {
+				var pattern = _g11[_g1];
+				++_g1;
 				var matched = true;
 				var _g2 = 0;
 				while(_g2 < pattern.length) {
 					var pos = pattern[_g2];
 					++_g2;
-					if(v.indexOf(pos) == -1) {
+					if(v1.indexOf(pos) == -1) {
 						matched = false;
 					}
 				}
@@ -335,15 +353,15 @@ var Game = function() {
 		};
 		var _g3 = 0;
 		while(_g3 < arr.length) {
-			var v1 = arr[_g3];
+			var v2 = arr[_g3];
 			++_g3;
-			if(v1.player == 0) {
-				player0.push(v1.position);
+			if(v2.player == 0) {
+				player0.push(v2.position);
 				if(check(player0)) {
 					return 0;
 				}
 			} else {
-				player1.push(v1.position);
+				player1.push(v2.position);
 				if(check(player1)) {
 					return 1;
 				}
@@ -351,12 +369,12 @@ var Game = function() {
 		}
 		return null;
 	}};
-	this.__coco_winner = tink_state__$Observable_Observable_$Impl_$.auto(this2);
-	var this3 = new tink_state__$State_SimpleState(0,null,null);
-	this.__coco_transitionCount = this3;
+	this.__coco_winner = tink_state__$Observable_Observable_$Impl_$.auto(this3);
+	var this4 = new tink_state__$State_SimpleState(0,null,null);
+	this.__coco_transitionCount = this4;
 	this.errorTrigger = tink_core__$Signal_Signal_$Impl_$.trigger();
 	this.transitionErrors = this.errorTrigger;
-	this.observables = { steps : this.__coco_steps, winner : this.__coco_winner, isInTransition : tink_state__$Observable_Observable_$Impl_$.map(this.__coco_transitionCount,tink_state__$Observable_Transform_$Impl_$.plain(function(count) {
+	this.observables = { steps : this.__coco_steps, currentPlayer : this.__coco_currentPlayer, winner : this.__coco_winner, isInTransition : tink_state__$Observable_Observable_$Impl_$.map(this.__coco_transitionCount,tink_state__$Observable_Transform_$Impl_$.plain(function(count) {
 		return count > 0;
 	}))};
 };
@@ -367,16 +385,9 @@ Game.prototype = {
 		if(tink_state__$Observable_Observable_$Impl_$.get_value(this.__coco_winner) != null) {
 			return;
 		}
-		var next;
-		var _g = tink_state__$Observable_Observable_$Impl_$.get_value(tink_state__$State_State_$Impl_$.get_value(this.__coco_steps).observableLength);
-		if(_g == 0) {
-			next = 0;
-		} else {
-			var v = _g;
-			next = tink_state__$State_State_$Impl_$.get_value(this.__coco_steps).get(v - 1).player == 0 ? 1 : 0;
-		}
 		var _this = tink_state__$State_State_$Impl_$.get_value(this.__coco_steps);
-		_this.insertMany(_this.items.length,[{ player : next, position : i}]);
+		var value = { player : tink_state__$Observable_Observable_$Impl_$.get_value(this.__coco_currentPlayer), position : i};
+		_this.insertMany(_this.items.length,[value]);
 	}
 };
 Math.__name__ = true;
