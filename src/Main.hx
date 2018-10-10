@@ -1,6 +1,7 @@
 package;
 
 import tink.state.*;
+import tink.pure.*;
 
 using Lambda;
 
@@ -13,11 +14,17 @@ class Main extends coconut.ui.View {
 	
 	function render() '
 		<div>
-			<if ${game.winner != null}>
-				Player ${game.winner} wins!
-			<else>
-				Player ${game.currentPlayer}\'s turn.
-			</if>
+			<button onclick=${game.reset}>Reset</button>
+			<div>
+				<switch ${game.state}>
+					<case ${Won(winner)}>
+						Player ${winner} wins!
+					<case ${Tied}>
+						Tied.
+					<case ${InProgress}>
+						Player ${game.currentPlayer}\'s turn.
+				</switch>
+			</div>
 			<div>
 				<box pos=${0}/>
 				<box pos=${1}/>
@@ -51,17 +58,16 @@ class Main extends coconut.ui.View {
 }
 
 class Game implements coconut.data.Model {
-	@:editable var steps:ObservableArray<Step> = new ObservableArray();
+	@:observable var steps:List<Step> = null;
 	
 	@:computed var currentPlayer:Int = {
-		switch steps.length {
-			case 0: 0;
-			case v: steps.get(v - 1).player == 0 ? 1 : 0;
+		switch steps.first() {
+			case None: 0;
+			case Some(v): v.player == 0 ? 1 : 0;
 		}
 	}
 	
-	@:computed var winner:Int = {
-		var arr = steps.toArray();
+	@:computed var state:State = {
 		var player0 = [];
 		var player1 = [];
 		
@@ -76,16 +82,16 @@ class Game implements coconut.data.Model {
 			return false;
 		}
 		
-		for(v in arr) {
+		for(v in steps) {
 			if(v.player == 0) {
 				player0.push(v.position);
-				if(check(player0)) return 0;
+				if(check(player0)) return Won(0);
 			} else {
 				player1.push(v.position);
-				if(check(player1)) return 1;
+				if(check(player1)) return Won(1);
 			}
 		}
-		return null;
+		return steps.length == 9 ? Tied : InProgress;
 	}
 	
 	static var patterns = [
@@ -99,16 +105,34 @@ class Game implements coconut.data.Model {
 		[2,4,6],
 	];
 	
-	public function select(i:Int) {
-		if(winner != null) return;
-		steps.push({
-			player: currentPlayer,
-			position: i,
-		});
+	@:transition
+	function select(i:Int) {
+		return switch state {
+			case InProgress:
+				{
+					steps: steps.prepend({
+						player: currentPlayer,
+						position: i,
+					})
+				}
+			case _:
+				@patch {}
+		}
+	}
+	
+	@:transition
+	function reset() {
+		return {steps: null}
 	}
 }
 
 typedef Step = {
 	final player:Int;
 	final position:Int;
+}
+
+enum State {
+	InProgress;
+	Won(winner:Int);
+	Tied;
 }
