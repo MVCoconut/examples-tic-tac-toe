@@ -285,12 +285,13 @@ Main.prototype = $extend(coconut_ui_View.prototype,{
 	,box: function(attr) {
 		var _gthis = this;
 		var __r = [];
+		var __ret = vdom__$Style_Style_$Impl_$.ofString("width:4em");
 		var f = ($_=tink_state__$Observable_Observable_$Impl_$.get_value(_gthis.__slots.game.observe()),$bind($_,$_.select));
 		var i = attr.pos;
-		var __ret = { onclick : tink_core__$Callback_Callback_$Impl_$.fromNiladic(function() {
+		var __ret1 = { style : __ret, onclick : tink_core__$Callback_Callback_$Impl_$.fromNiladic(function() {
 			return f(i);
 		})};
-		var attr1 = __ret;
+		var attr1 = __ret1;
 		var __r1 = [];
 		var __r2 = [];
 		var _g = Lambda.find(tink_pure__$List_List_$Impl_$.toArray(tink_state__$State_State_$Impl_$.get_value(tink_state__$Observable_Observable_$Impl_$.get_value(this.__slots.game.observe()).__coco_steps)),function(v) {
@@ -310,8 +311,8 @@ Main.prototype = $extend(coconut_ui_View.prototype,{
 				__r2.push(" ");
 			}
 		}
-		var __ret1 = { };
-		__r1.push(vdom_VDom.h("pre",__ret1,__r2));
+		var __ret2 = { };
+		__r1.push(vdom_VDom.h("pre",__ret2,__r2));
 		__r.push(vdom_VDom.h("button",attr1,__r1));
 		return __r[0];
 	}
@@ -1735,6 +1736,21 @@ vdom_HtmlFragment.prototype = $extend(vdom_Widget.prototype,{
 		}
 	}
 });
+var vdom__$Style_Style_$Impl_$ = {};
+vdom__$Style_Style_$Impl_$.__name__ = true;
+vdom__$Style_Style_$Impl_$.ofString = function(s) {
+	vdom__$Style_Style_$Impl_$.style.cssText = s;
+	var ret = { };
+	var ret1 = ret;
+	var _g = 0;
+	var _g1 = vdom__$Style_Style_$Impl_$.style;
+	while(_g < _g1.length) {
+		var name = _g1[_g];
+		++_g;
+		ret1[name] = vdom__$Style_Style_$Impl_$.style.getPropertyValue(name);
+	}
+	return ret;
+};
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
@@ -3427,5 +3443,6 @@ tink_state__$Observable_Observable_$Impl_$.stack = new haxe_ds_List();
 tink_state__$Observable_Observable_$Impl_$.scheduled = [];
 tink_state__$Observable_Observable_$Impl_$.hasRAF = typeof window != 'undefined' && 'requestAnimationFrame' in window;
 tink_state__$Observable_Observable_$Impl_$.isScheduled = false;
+vdom__$Style_Style_$Impl_$.style = window.document.createElement("div").style;
 Main.main();
 })();

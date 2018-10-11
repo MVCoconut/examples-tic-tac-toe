@@ -44,7 +44,7 @@ class Main extends coconut.ui.View {
 	';
 	
 	function box(attr:{pos:Int}) '
-		<button onclick=${game.select.bind(attr.pos)}>
+		<button style="width:4em" onclick=${game.select.bind(attr.pos)}>
 			<pre>
 				<switch ${game.steps.toArray().find(v -> v.position == attr.pos)}>
 					<case ${null}>\u00a0
