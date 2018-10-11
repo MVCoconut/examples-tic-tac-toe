@@ -108,15 +108,12 @@ class Game implements coconut.data.Model {
 	@:transition
 	function select(i:Int) {
 		return switch state {
-			case InProgress:
-				switch steps.first(v -> v.position == i) {
-					case Some(_): @patch {}
-					case None: {
-						steps: steps.prepend({
-							player: currentPlayer,
-							position: i,
-						}),
-					}
+			case InProgress if(steps.first(v -> v.position == i) == None):
+				{
+					steps: steps.prepend({
+						player: currentPlayer,
+						position: i,
+					}),
 				}
 			case _:
 				@patch {}

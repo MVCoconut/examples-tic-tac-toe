@@ -406,23 +406,9 @@ Game.prototype = {
 	select: function(i) {
 		var _gthis = this;
 		var _g = tink_state__$Observable_Observable_$Impl_$.get_value(_gthis.__coco_state);
-		var tmp;
-		if(_g[1] == 0) {
-			var _g1 = tink_pure__$List_List_$Impl_$.first(tink_state__$State_State_$Impl_$.get_value(_gthis.__coco_steps),function(v) {
-				return v.position == i;
-			});
-			switch(_g1[1]) {
-			case 0:
-				tmp = tink_core__$Promise_Promise_$Impl_$.ofOutcome(tink_core_Outcome.Success({ }));
-				break;
-			case 1:
-				tmp = tink_core__$Promise_Promise_$Impl_$.ofOutcome(tink_core_Outcome.Success({ steps : tink_pure__$List_List_$Impl_$.prepend(tink_state__$State_State_$Impl_$.get_value(_gthis.__coco_steps),{ player : tink_state__$Observable_Observable_$Impl_$.get_value(_gthis.__coco_currentPlayer), position : i})}));
-				break;
-			}
-		} else {
-			tmp = tink_core__$Promise_Promise_$Impl_$.ofOutcome(tink_core_Outcome.Success({ }));
-		}
-		return tink_core__$Promise_Promise_$Impl_$.next(this.__cocoupdate(tmp),function(_) {
+		return tink_core__$Promise_Promise_$Impl_$.next(this.__cocoupdate(_g[1] == 0 ? tink_pure__$List_List_$Impl_$.first(tink_state__$State_State_$Impl_$.get_value(_gthis.__coco_steps),function(v) {
+			return v.position == i;
+		}) == haxe_ds_Option.None ? tink_core__$Promise_Promise_$Impl_$.ofOutcome(tink_core_Outcome.Success({ steps : tink_pure__$List_List_$Impl_$.prepend(tink_state__$State_State_$Impl_$.get_value(_gthis.__coco_steps),{ player : tink_state__$Observable_Observable_$Impl_$.get_value(_gthis.__coco_currentPlayer), position : i})})) : tink_core__$Promise_Promise_$Impl_$.ofOutcome(tink_core_Outcome.Success({ })) : tink_core__$Promise_Promise_$Impl_$.ofOutcome(tink_core_Outcome.Success({ }))),function(_) {
 			return tink_core__$Promise_Promise_$Impl_$.ofOutcome(tink_core_Outcome.Success(tink_core_Noise.Noise));
 		});
 	}
